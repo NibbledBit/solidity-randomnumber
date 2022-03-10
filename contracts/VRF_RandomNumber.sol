@@ -1,13 +1,12 @@
 // SPDX-License-Identifier: MIT
-
-pragma solidity ^0.8.0;
-pragma abicoder v2;
+// An example of a consumer contract that relies on a subscription for funding.
+pragma solidity ^0.8.7;
 
 import "@chainlink/contracts/src/v0.8/interfaces/LinkTokenInterface.sol";
 import "@chainlink/contracts/src/v0.8/interfaces/VRFCoordinatorV2Interface.sol";
 import "@chainlink/contracts/src/v0.8/VRFConsumerBaseV2.sol";
 
-contract VRF_RandomNumber is VRFConsumerBaseV2 {
+contract VRFv2Consumer is VRFConsumerBaseV2 {
     VRFCoordinatorV2Interface COORDINATOR;
     LinkTokenInterface LINKTOKEN;
 

@@ -1,5 +1,6 @@
 import pytest
 from brownie import network, config, VRF_RandomNumber
+from scripts.deploy import deploy_contract
 
 from scripts.helpful_scripts import (
     LOCAL_BLOCKCHAIN_ENVIRONMENTS,
@@ -10,18 +11,15 @@ from scripts.helpful_scripts import (
 def test_deploy_contract():
     if network.show_active() != "rinkeby":
         pytest.skip("only for Rinkeby testing.")
-    # Get Account
+    deployed_contract = deploy_contract()
+
+
+def test_random_number():
+    if network.show_active() != "rinkeby":
+        pytest.skip("only for Rinkeby testing.")
+
     publish_account = get_publish_account()
-    print(f"Account {publish_account}")
 
-    # configure dependencies
-    print(f"The active network is {network.show_active()}")
+    deployed_contract = deploy_contract()
 
-    print("Deploying BasicNFT")
-    deployed_contract = VRF_RandomNumber.deploy(
-        config["networks"][network.show_active()]["vrf_subscription"],
-        {"from": publish_account},
-        publish_source=config["networks"][network.show_active()].get("verify"),
-    )
-    print(f"Deployed: {deployed_contract}")
-    return deployed_contract
+    deployed_contract.requestRandomWords({"from": publish_account})
