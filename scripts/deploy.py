@@ -9,14 +9,17 @@ def deploy_contract():
     # configure dependencies
     print(f"The active network is {network.show_active()}")
 
+    TEST = config["networks"][network.show_active()]["vrf_subscription"]
+    print(f"Subscription: {TEST}")
     print("Deploying VRFv2Consumer")
     deployed_contract = VRFv2Consumer.deploy(
-        980,
+        TEST,
         {"from": publish_account},
         publish_source=config["networks"][network.show_active()].get("verify"),
     )
     print(f"Deployed: {deployed_contract}")
     return deployed_contract
+    # NOTE after deploying contract, go to https://vrf.chain.link/rinkeby and add address as consumer
 
 
 def main():

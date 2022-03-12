@@ -7,6 +7,35 @@ import "@chainlink/contracts/src/v0.8/interfaces/VRFCoordinatorV2Interface.sol";
 import "@chainlink/contracts/src/v0.8/VRFConsumerBaseV2.sol";
 
 contract VRFv2Consumer is VRFConsumerBaseV2 {
+    function requestRandomNumber() public {
+        s_requestId = COORDINATOR.requestRandomWords(
+            keyHash,
+            s_subscriptionId,
+            requestConfirmations,
+            callbackGasLimit,
+            numWords
+        );
+    }
+
+    function fulfillRandomWords(
+        uint256, /* requestId */
+        uint256[] memory randomWords
+    ) internal override {
+        uint256[] memory randomNumbers = randomWords;
+    }
+
+    modifier onlyOwner() {
+        require(msg.sender == s_owner);
+        _;
+    }
+
+    constructor(uint64 subscriptionId) VRFConsumerBaseV2(vrfCoordinator) {
+        COORDINATOR = VRFCoordinatorV2Interface(vrfCoordinator);
+        LINKTOKEN = LinkTokenInterface(link);
+        s_owner = msg.sender;
+        s_subscriptionId = subscriptionId;
+    }
+
     VRFCoordinatorV2Interface COORDINATOR;
     LinkTokenInterface LINKTOKEN;
 
@@ -45,35 +74,4 @@ contract VRFv2Consumer is VRFConsumerBaseV2 {
     uint256[] public s_randomWords;
     uint256 public s_requestId;
     address s_owner;
-
-    constructor(uint64 subscriptionId) VRFConsumerBaseV2(vrfCoordinator) {
-        COORDINATOR = VRFCoordinatorV2Interface(vrfCoordinator);
-        LINKTOKEN = LinkTokenInterface(link);
-        s_owner = msg.sender;
-        s_subscriptionId = subscriptionId;
-    }
-
-    // Assumes the subscription is funded sufficiently.
-    function requestRandomWords() external onlyOwner {
-        // Will revert if subscription is not set and funded.
-        s_requestId = COORDINATOR.requestRandomWords(
-            keyHash,
-            s_subscriptionId,
-            requestConfirmations,
-            callbackGasLimit,
-            numWords
-        );
-    }
-
-    function fulfillRandomWords(
-        uint256, /* requestId */
-        uint256[] memory randomWords
-    ) internal override {
-        s_randomWords = randomWords;
-    }
-
-    modifier onlyOwner() {
-        require(msg.sender == s_owner);
-        _;
-    }
 }
