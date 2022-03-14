@@ -7,7 +7,7 @@ def vrf_random():
 
     deployed_contract = VRFv2Consumer[-1]
     print(deployed_contract)
-    deployed_contract.requestRandomWords({"from": publish_account})
+    deployed_contract.requestRandomNumber({"from": publish_account})
 
 
 def main():
