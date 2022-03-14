@@ -7,5 +7,19 @@ import "@chainlink/contracts/src/v0.8/interfaces/VRFCoordinatorV2Interface.sol";
 import "@chainlink/contracts/src/v0.8/VRFConsumerBaseV2.sol";
 
 contract PsuedoRandomNumber is VRFConsumerBaseV2 {
-    function requestRandomNumber() public returns (uint256) {}
+    uint256 controlSeed = 0;
+
+    function requestRandomNumber() public returns (uint256) {
+        controlSeed++;
+        return
+            uint256(
+                keccak256(
+                    abi.encodePacked(
+                        block.difficulty,
+                        block.timestamp,
+                        controlSeed
+                    )
+                )
+            );
+    }
 }
